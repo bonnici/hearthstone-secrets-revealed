@@ -103,14 +103,19 @@ class MysteryTrap {
 	*/
 
 	confirmPossibleTrap(possibleTrapIndex) {
-		if (possibleTrapIndex < 0 || possibleTrapIndex >= this.possibleTraps.length) return;
+		if (possibleTrapIndex < 0 || possibleTrapIndex >= this.possibleTraps.length) {
+			return;
+		}
 
 		this.possibleTraps.forEach((possibleTrap) => possibleTrap.activePossibility = false);
 		this.actualTrap = this.possibleTraps[possibleTrapIndex].trap;
 	}
 
 	rejectPossibleTrap(possibleTrapIndex) {
-		if (possibleTrapIndex < 0 || possibleTrapIndex >= this.possibleTraps.length) return;
+		if (possibleTrapIndex < 0 || possibleTrapIndex >= this.possibleTraps.length) {
+			return;
+		}
+
 		this.possibleTraps[possibleTrapIndex].activePossibility = false;
 	}
 
@@ -141,7 +146,9 @@ class AppState {
 		console.log('Adding ' + trapClass + ' trap');
 
 		let newMysteryTrap = new MysteryTrap(trapClass);
-		if (newMysteryTrap.possibleTraps.length === 0) return;
+		if (newMysteryTrap.possibleTraps.length === 0) {
+			return;
+		}
 
 		this.mysteryTraps.push(newMysteryTrap);
 		//console.log('mysteryTraps', this.mysteryTraps);
@@ -151,7 +158,9 @@ class AppState {
 	}
 
 	confirmPossibility(mysteryTrapIndex, possibleTrapIndex) {
-		if (mysteryTrapIndex < 0 || mysteryTrapIndex >= this.mysteryTraps.length) return;
+		if (mysteryTrapIndex < 0 || mysteryTrapIndex >= this.mysteryTraps.length) {
+			return;
+		}
 
 		this.mysteryTraps[mysteryTrapIndex].confirmPossibleTrap(possibleTrapIndex);
 
@@ -160,7 +169,9 @@ class AppState {
 	}
 
 	rejectPossibility(mysteryTrapIndex, possibleTrapIndex) {
-		if (mysteryTrapIndex < 0 || mysteryTrapIndex >= this.mysteryTraps.length) return;
+		if (mysteryTrapIndex < 0 || mysteryTrapIndex >= this.mysteryTraps.length) {
+			return;
+		}
 
 		this.mysteryTraps[mysteryTrapIndex].rejectPossibleTrap(possibleTrapIndex);
 
@@ -169,7 +180,9 @@ class AppState {
 	}
 
 	confirmTriggeringEffect(triggeringEffectIndex) {
-		if (triggeringEffectIndex < 0 || triggeringEffectIndex >= this.triggeringEffects.length) return;
+		if (triggeringEffectIndex < 0 || triggeringEffectIndex >= this.triggeringEffects.length) {
+			return;
+		}
 
 		let trapsToReject = this.triggeringEffects[triggeringEffectIndex].effect.trapsTriggered;
 		this.mysteryTraps.forEach((mysteryTrap) => mysteryTrap.rejectTraps(trapsToReject));
@@ -220,3 +233,14 @@ class AppState {
 
 var appState = new AppState();
 appState.addTrap('hunter');
+
+
+const MyComponent = props => (
+	<div className={props.className}>Hello, component!</div>
+);
+
+ReactDOM.render(
+	//React.createElement('h1', null, 'Hello, world!'),
+	<MyComponent className="test" />,
+	document.getElementById('example')
+);
