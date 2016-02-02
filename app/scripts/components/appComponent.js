@@ -7,8 +7,9 @@ const AppComponent = props => (
 );
 */
 
+
 /*eslint-disable no-unused-vars*/
-class AppComponent extends React.Component {
+class AppComponent extends BaseComponent {
 /*eslint-enable no-unused-vars*/
 
 	constructor(props) {
@@ -16,14 +17,8 @@ class AppComponent extends React.Component {
 		this.state = { stateTest: 'test' };
 
 		//todo these should be constants, not strings
-		this.subscriptions = [
-			PubSub.subscribe('testEvent', (e, data) => { this.handleTestEvent(e, data); }),
-			PubSub.subscribe('testClear', () => { this.handleClearEvent(); })
-		];
-	}
-
-	componentWillUnmount() {
-		this.subscriptions.forEach((sub) => PubSub.unsubscribe(sub));
+		this.subscribe('testEvent', (e, data) => { this.handleTestEvent(e, data); });
+		this.subscribe('testClear', () => { this.handleClearEvent(); });
 	}
 
 	render() {
