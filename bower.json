@@ -4,6 +4,8 @@
   "dependencies": {
     "jquery": "~2.1.1",
     "underscore": "~1.8.3",
-    "react": "~0.14.7"
+    "react": "~0.14.7",
+    "eventEmitter": "~4.3.0",
+    "PubSubJS": "pubsub-js#^1.5.3"
   }
 }

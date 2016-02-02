@@ -140,6 +140,7 @@ class AppState {
 	constructor() {
 		this.mysteryTraps = [];
 		this.triggeringEffects = [];
+		//this.eventEmitter = new EventEmitter();
 	}
 
 	addTrap(trapClass) {
@@ -229,18 +230,55 @@ class AppState {
 			});
 		});
 	}
+
+	//temp
+	testEmit(value) {
+		//this.eventEmitter.emit('testEvent', value);
+		PubSub.publish('testEvent', value);
+	}
+	testClear() {
+		PubSub.publish('testClear');
+	}
 }
 
 var appState = new AppState();
 appState.addTrap('hunter');
 
-
-const MyComponent = props => (
-	<div className={props.className}>Hello, component!</div>
+/*
+// Example of simple class (no state)
+const AppComponent = props => (
+	<div>Hello, {props.className}!</div>
 );
+*/
+class AppComponent extends React.Component {
+	_handleTestEvent = (e, data) => {
+		console.log(e);
+		console.log(data);
+		this.setState({stateTest: this.state.stateTest + " something new!" + data + "!!"});
+	};
+	_handleClearEvent = () => {
+		PubSub.unsubscribe(this._handleTestEvent);
+	};
+
+	constructor(props) {
+		super(props);
+		this.state = { stateTest: "test" };
+		//this.props.eventEmitter.addListener('testEvent', this._handleTestEvent);
+		PubSub.subscribe('testEvent', this._handleTestEvent);
+		PubSub.subscribe('testClear', this._handleClearEvent);
+	}
+
+	componentWillUnmount() {
+		//this.props.eventEmitter.removeListener('testEvent', this._handleTestEvent);
+		PubSub.unsubscribe(this._handleTestEvent);
+	}
+
+	render() {
+		return <div>Hello, {this.props.className}! {this.state.stateTest}</div>
+	}
+}
 
 ReactDOM.render(
-	//React.createElement('h1', null, 'Hello, world!'),
-	<MyComponent className="test" />,
+	<AppComponent className="testing" /*eventEmitter={appState.eventEmitter}*/ />,
 	document.getElementById('example')
 );
