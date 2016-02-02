@@ -1,14 +1,28 @@
 'use strict';
 
-/*
-// Example of simple class (no state)
+class BaseComponent extends React.Component {
+	constructor(props) {
+		super(props);
+		this.subscriptions = [];
+	}
+
+	componentWillUnmount() {
+		this.subscriptions.forEach((sub) => PubSub.unsubscribe(sub));
+	}
+
+	subscribe(eventName, handler) {
+		this.subscriptions.push(PubSub.subscribe(eventName, handler));
+	}
+}
+
+/* Example of simple class (no state)
 const AppComponent = props => (
 	<div>Hello, {props.className}!</div>
 );
 */
-/*eslint-disable no-unused-vars*/
+
+/* Event handling
 class AppComponent extends BaseComponent {
-/*eslint-enable no-unused-vars*/
 	constructor(props) {
 		super(props);
 		this.state = { stateTest: 'test' };
@@ -33,17 +47,40 @@ class AppComponent extends BaseComponent {
 		this.subscriptions.forEach((sub) => PubSub.unsubscribe(sub));
 	}
 }
+*/
+
+class RevealedSecretList extends BaseComponent {
+	render() {
+		return <div>RevealedSecretList</div>;
+	}
+}
+class UnrevealedSecretList extends BaseComponent {
+	render() {
+		return <div>UnrevealedSecretList</div>;
+	}
+}
+class ConsequentialActionList extends BaseComponent {
+	render() {
+		return <div>ConsequentialActionList</div>;
+	}
+}
 
 /*eslint-disable no-unused-vars*/
-//class AppComponent extends BaseComponent {
+class AppComponent extends BaseComponent {
 /*eslint-enable no-unused-vars*/
-/*
+
 	constructor(props) {
 		super(props);
 	}
 
 	render() {
-		return <div>Test</div>;
+		return (
+			<div>
+				<RevealedSecretList />
+				<UnrevealedSecretList />
+				<ConsequentialActionList />
+			</div>
+		);
 	}
 }
-*/
+
