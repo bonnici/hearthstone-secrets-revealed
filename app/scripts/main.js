@@ -1,7 +1,7 @@
 'use strict';
 
 var appState = new AppState();
-appState.addTrap('hunter');
+appState.addPlayedSecret('hunter');
 
 ReactDOM.render(
 	//<AppComponent className="testing" />,
