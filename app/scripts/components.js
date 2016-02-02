@@ -51,14 +51,33 @@ class AppComponent extends BaseComponent {
 
 class RevealedSecretList extends BaseComponent {
 	render() {
-		return <div>RevealedSecretList</div>;
+		return (
+			<div>
+				<h1>RevealedSecretList</h1>
+				<ul>
+					{this.props.revealedSecrets.map(function(secret, index) {
+						return <RevealedSecret key={index} secret={secret}/>;
+					})}
+				</ul>
+			</div>
+		);
 	}
 }
+
+class RevealedSecret extends BaseComponent {
+	render() {
+		return (
+			<div>{this.props.secret.name} ({this.props.secret.heroClass}) - {this.props.secret.text}</div>
+		);
+	}
+}
+
 class UnrevealedSecretList extends BaseComponent {
 	render() {
 		return <div>UnrevealedSecretList</div>;
 	}
 }
+
 class ConsequentialActionList extends BaseComponent {
 	render() {
 		return <div>ConsequentialActionList</div>;
@@ -71,16 +90,26 @@ class AppComponent extends BaseComponent {
 
 	constructor(props) {
 		super(props);
+		this.state = { revealedSecrets: [] };
+
+		this.subscribe(events.SECRET_REVEALED, (e, data) => { this.handleSecretRevealed(e, data); });
 	}
 
 	render() {
 		return (
 			<div>
-				<RevealedSecretList />
+				<RevealedSecretList revealedSecrets={this.state.revealedSecrets}/>
 				<UnrevealedSecretList />
 				<ConsequentialActionList />
 			</div>
 		);
+	}
+
+	handleSecretRevealed(e, secret) {
+		console.log("handleSecretRevealed", e, secret);
+
+		this.state.revealedSecrets.push(secret);
+		this.setState({ revealedSecrets: this.state.revealedSecrets });
 	}
 }
 

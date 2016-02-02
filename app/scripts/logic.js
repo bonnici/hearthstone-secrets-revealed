@@ -16,12 +16,12 @@ class Secret {
 	}
 }
 
-var bear = new Secret('Bear Secret', 'hunter', 'After your hero is attacked, summon a 3/3 Bear with Taunt', 'This might summon a 3/3 boar for the opposing hero');
-var dart = new Secret('Dart Secret', 'hunter', 'When an opposing Hero Power is used, deal 5 damage to a random enemy', 'This might deal 5 damage to a random friendly character');
-var explosive = new Secret('Explosive Secret', 'hunter', 'When your hero is attacked, deal 2 damage to all enemies', 'This might deal 2 damage to all friendly characters');
-var freezing = new Secret('Freezing Secret', 'hunter', 'When an enemy minion attacks, return it to its owner\'s hand and it costs (2) more', 'That minion might be returned to your hand, costing 2 more');
+var bear = new Secret('Bear Trap', 'hunter', 'After your hero is attacked, summon a 3/3 Bear with Taunt', 'This might summon a 3/3 boar for the opposing hero');
+var dart = new Secret('Dart Trap', 'hunter', 'When an opposing Hero Power is used, deal 5 damage to a random enemy', 'This might deal 5 damage to a random friendly character');
+var explosive = new Secret('Explosive Trap', 'hunter', 'When your hero is attacked, deal 2 damage to all enemies', 'This might deal 2 damage to all friendly characters');
+var freezing = new Secret('Freezing Trap', 'hunter', 'When an enemy minion attacks, return it to its owner\'s hand and it costs (2) more', 'That minion might be returned to your hand, costing 2 more');
 var misdirection = new Secret('Misdirection', 'hunter', 'When a character attacks you hero, instead he attacks another random character', 'That attack might instead hit another random character');
-var snake = new Secret('Snake Secret', 'hunter', 'When one of your minions is attacked, summon three 1/1 snakes', 'This might summon 3 1/1 snakes for your opponent');
+var snake = new Secret('Snake Trap', 'hunter', 'When one of your minions is attacked, summon three 1/1 snakes', 'This might summon 3 1/1 snakes for your opponent');
 var snipe = new Secret('Snipe', 'hunter', 'When your opponent plays a minion, deal 4 damage to it', 'That minion might be dealt 4 damage');
 var counterspell = new Secret('Counterspell', 'mage', 'When your opponent casts a spell, Counter it', 'That spell might be Countered');
 var duplicate = new Secret('Duplicate', 'mage', 'When a friendly minion dies, put 2 copies of it into your hand', 'Two copies of that minion might be put into your opponents hand');
@@ -156,6 +156,8 @@ class AppState {
 
 		this.rebuildConsequentialActions();
 		this.prettyPrint();
+
+		PubSub.publish(events.SECRET_REVEALED, this.playedSecrets[playedSecretIndex].revealedSecret);
 	}
 
 	setSecretAsImpossible(playedSecretIndex, possibleSecretIndex) {
@@ -221,10 +223,12 @@ class AppState {
 
 	//temp
 	//todo - these should be constants, not strings
+	/*
 	testEmit(value) {
 		PubSub.publish('testEvent', value);
 	}
 	testClear() {
 		PubSub.publish('testClear');
 	}
+	*/
 }
