@@ -73,8 +73,8 @@ var triggeringActions = [attackHero, attackHeroWithMinion, damageHero, fatallyDa
 
 
 class SecretPossibility {
-	constructor(trap) {
-		this.secret = trap;
+	constructor(secret) {
+		this.secret = secret;
 		this.activePossibility = true;
 	}
 
@@ -84,20 +84,10 @@ class SecretPossibility {
 }
 
 
-class PlayedSecret {
+class UnrevealedSecret {
 	constructor(heroClass) {
 		this.heroClass = heroClass;
 		this.possibleSecrets = secrets.filter((secret) => secret.heroClass === this.heroClass).map((secret) => new SecretPossibility(secret));
-		this.revealedSecret = null;
-	}
-
-	setSecretAsRevealed(possibleSecretIndex) {
-		if (possibleSecretIndex < 0 || possibleSecretIndex >= this.possibleSecrets.length) {
-			return;
-		}
-
-		this.possibleSecrets.forEach((possibleTrap) => possibleTrap.activePossibility = false);
-		this.revealedSecret = this.possibleSecrets[possibleSecretIndex].secret;
 	}
 
 	setSecretAsImpossible(possibleSecretIndex) {
@@ -129,43 +119,52 @@ class ConsequentialAction {
 class AppState {
 /*eslint-enable no-unused-vars*/
 	constructor() {
-		this.playedSecrets = [];
+		this.revealedSecrets = [];
+		this.unrevealedSecrets = [];
 		this.consequentialActions = [];
 	}
 
-	addPlayedSecret(secretClass) {
+	addUnrevealedSecret(secretClass) {
 		console.log('Adding ' + secretClass + ' secret');
 
-		let newPlayedSecret = new PlayedSecret(secretClass);
-		if (newPlayedSecret.possibleSecrets.length === 0) {
+		let unrevealedSecret = new UnrevealedSecret(secretClass);
+		if (unrevealedSecret.possibleSecrets.length === 0) {
 			return;
 		}
 
-		this.playedSecrets.push(newPlayedSecret);
+		this.unrevealedSecrets.push(unrevealedSecret);
 
 		this.rebuildConsequentialActions();
 		this.prettyPrint();
 	}
 
-	setSecretAsRevealed(playedSecretIndex, possibleSecretIndex) {
-		if (playedSecretIndex < 0 || playedSecretIndex >= this.playedSecrets.length) {
+	setSecretAsRevealed(unrevealedSecretIndex, possibleSecretIndex) {
+		if (unrevealedSecretIndex < 0 || unrevealedSecretIndex >= this.unrevealedSecrets.length) {
 			return;
 		}
 
-		this.playedSecrets[playedSecretIndex].setSecretAsRevealed(possibleSecretIndex);
+		var unrevealedSecretToReveal = this.unrevealedSecrets[unrevealedSecretIndex];
+		if (possibleSecretIndex < 0 || possibleSecretIndex >= unrevealedSecretToReveal.possibleSecrets.length) {
+			return;
+		}
+
+		var secret = unrevealedSecretToReveal.possibleSecrets[possibleSecretIndex].secret;
+
+		this.revealedSecrets.push(secret);
+		this.unrevealedSecrets.splice(unrevealedSecretIndex, 1);
 
 		this.rebuildConsequentialActions();
 		this.prettyPrint();
 
-		PubSub.publish(events.SECRET_REVEALED, this.playedSecrets[playedSecretIndex].revealedSecret);
+		PubSub.publish(events.SECRET_REVEALED, secret);
 	}
 
-	setSecretAsImpossible(playedSecretIndex, possibleSecretIndex) {
-		if (playedSecretIndex < 0 || playedSecretIndex >= this.playedSecrets.length) {
+	setSecretAsImpossible(unrevealedSecretIndex, possibleSecretIndex) {
+		if (unrevealedSecretIndex < 0 || unrevealedSecretIndex >= this.unrevealedSecrets.length) {
 			return;
 		}
 
-		this.playedSecrets[playedSecretIndex].setSecretAsImpossible(possibleSecretIndex);
+		this.unrevealedSecrets[unrevealedSecretIndex].setSecretAsImpossible(possibleSecretIndex);
 
 		this.rebuildConsequentialActions();
 		this.prettyPrint();
@@ -177,7 +176,7 @@ class AppState {
 		}
 
 		let secretsToSetAsImpossible = this.consequentialActions[consequentialActionIndex].action.secretsTriggered;
-		this.playedSecrets.forEach((playedSecret) => playedSecret.setSecretsAsImpossible(secretsToSetAsImpossible));
+		this.unrevealedSecrets.forEach((playedSecret) => playedSecret.setSecretsAsImpossible(secretsToSetAsImpossible));
 
 		this.rebuildConsequentialActions();
 		this.prettyPrint();
@@ -187,7 +186,7 @@ class AppState {
 		let possibleSecrets = [];
 		let activeConsequentialActions = [];
 
-		this.playedSecrets.forEach((playedSecret) => {
+		this.unrevealedSecrets.forEach((playedSecret) => {
 			playedSecret.possibleSecrets
 				.filter((possibleSecret) => possibleSecret.activePossibility)
 				.forEach((possibleSecret) => {
@@ -202,10 +201,10 @@ class AppState {
 	//temp
 	prettyPrint() {
 		console.log('\nRevealed Secrets:');
-		this.playedSecrets.filter((x) => x.revealedSecret !== null).forEach((x) => console.log(x.revealedSecret.name));
+		this.revealedSecrets.forEach((x) => console.log(x.name));
 
 		console.log('\nUnrevealed Secrets:');
-		this.playedSecrets.filter((x) => x.revealedSecret === null).forEach((x) => {
+		this.unrevealedSecrets.forEach((x) => {
 			console.log(x.heroClass);
 			x.possibleSecrets.forEach((y) => {
 				console.log('  ' + y.secret.name + ' (' + (y.activePossibility ? 'ACTIVE' : 'inactive') + ')');

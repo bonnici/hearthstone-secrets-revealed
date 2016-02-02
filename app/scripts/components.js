@@ -106,8 +106,6 @@ class AppComponent extends BaseComponent {
 	}
 
 	handleSecretRevealed(e, secret) {
-		console.log("handleSecretRevealed", e, secret);
-
 		this.state.revealedSecrets.push(secret);
 		this.setState({ revealedSecrets: this.state.revealedSecrets });
 	}
