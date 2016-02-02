@@ -45,7 +45,10 @@
     },
     "globals": {
       "_": true,
-      "ReactDOM": true
+      "ReactDOM": true,
+      "React": true,
+      "PubSub": true,
+      "AppState": true
     },
     "ecmaFeatures": {
       "jsx": true
