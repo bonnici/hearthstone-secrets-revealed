@@ -1,11 +1,11 @@
 'use strict';
 
 class Secret {
-	constructor(name, heroClass, text, concequence) {
+	constructor(name, heroClass, text, consequence) {
 		this.name = name;
 		this.heroClass = heroClass;
 		this.text = text;
-		this.concequence = concequence;
+		this.consequence = consequence;
 		this.triggeredBy = [];
 	}
 
@@ -111,7 +111,7 @@ class ConsequentialAction {
 	constructor(action, possibleSecrets) {
 		this.action = action;
 		let filteredPossibleSecrets = possibleSecrets.filter((possibleSecret) => possibleSecret.activePossibility).map((possibleSecret) => possibleSecret.secret);
-		this.concequences = _.intersection(this.action.secretsTriggered, filteredPossibleSecrets).map((secret) => secret.concequence);
+		this.consequences = _.intersection(this.action.secretsTriggered, filteredPossibleSecrets).map((secret) => secret.consequence);
 	}
 }
 
@@ -125,8 +125,6 @@ class AppState {
 	}
 
 	addUnrevealedSecret(secretClass) {
-		console.log('Adding ' + secretClass + ' secret');
-
 		let unrevealedSecret = new UnrevealedSecret(secretClass);
 		if (unrevealedSecret.possibleSecrets.length === 0) {
 			return;
@@ -136,6 +134,8 @@ class AppState {
 
 		this.rebuildConsequentialActions();
 		this.prettyPrint();
+
+		PubSub.publish(events.UNREVEALED_SECRETS_UPDATED, this.unrevealedSecrets);
 	}
 
 	setSecretAsRevealed(unrevealedSecretIndex, possibleSecretIndex) {
@@ -157,6 +157,7 @@ class AppState {
 		this.prettyPrint();
 
 		PubSub.publish(events.SECRET_REVEALED, secret);
+		PubSub.publish(events.UNREVEALED_SECRETS_UPDATED, this.unrevealedSecrets);
 	}
 
 	setSecretAsImpossible(unrevealedSecretIndex, possibleSecretIndex) {
@@ -168,6 +169,8 @@ class AppState {
 
 		this.rebuildConsequentialActions();
 		this.prettyPrint();
+
+		PubSub.publish(events.UNREVEALED_SECRETS_UPDATED, this.unrevealedSecrets);
 	}
 
 	setConsequentialActionAsPerformed(consequentialActionIndex) {
@@ -180,6 +183,8 @@ class AppState {
 
 		this.rebuildConsequentialActions();
 		this.prettyPrint();
+
+		PubSub.publish(events.UNREVEALED_SECRETS_UPDATED, this.unrevealedSecrets);
 	}
 
 	rebuildConsequentialActions() {
@@ -196,6 +201,7 @@ class AppState {
 		});
 
 		this.consequentialActions = activeConsequentialActions.map((action) => new ConsequentialAction(action, possibleSecrets));
+		PubSub.publish(events.CONSEQUENTIAL_ACTIONS_UPDATED, this.consequentialActions);
 	}
 
 	//temp
@@ -214,20 +220,9 @@ class AppState {
 		console.log('\nConsequential Actions:');
 		this.consequentialActions.forEach((x) => {
 			console.log(x.action.question);
-			x.concequences.forEach((y) => {
+			x.consequences.forEach((y) => {
 				console.log('  ' + y);
 			});
 		});
 	}
-
-	//temp
-	//todo - these should be constants, not strings
-	/*
-	testEmit(value) {
-		PubSub.publish('testEvent', value);
-	}
-	testClear() {
-		PubSub.publish('testClear');
-	}
-	*/
 }

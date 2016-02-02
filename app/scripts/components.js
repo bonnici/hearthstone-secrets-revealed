@@ -15,74 +15,64 @@ class BaseComponent extends React.Component {
 	}
 }
 
-/* Example of simple class (no state)
-const AppComponent = props => (
-	<div>Hello, {props.className}!</div>
+const RevealedSecretListComponent = props => (
+	<div>
+		<h1>Revealed Secrets</h1>
+		<ul>
+			{props.revealedSecrets.map(function(secret, index) {
+				return <RevealedSecretComponent key={index} secret={secret}/>;
+			})}
+		</ul>
+	</div>
 );
-*/
 
-/* Event handling
-class AppComponent extends BaseComponent {
-	constructor(props) {
-		super(props);
-		this.state = { stateTest: 'test' };
+const RevealedSecretComponent = props => (
+	<div>{props.secret.name} ({props.secret.heroClass}) - {props.secret.text}</div>
+);
 
-		//todo these should be constants, not strings
-		this.subscribe('testEvent', (e, data) => { this.handleTestEvent(e, data); });
-		this.subscribe('testClear', () => { this.handleClearEvent(); });
-	}
+const UnrevealedSecretListComponent = props => (
+	<div>
+		<h1>Unrevealed Secrets</h1>
+		<ul>
+			{props.unrevealedSecrets.map(function(secret, index) {
+				return <UnrevealedSecretComponent key={index} unrevealedSecret={secret}/>;
+			})}
+		</ul>
+	</div>
+);
 
-	render() {
-		return <div>Hello, {this.props.className}! {this.state.stateTest}</div>;
-	}
+const UnrevealedSecretComponent = props => (
+	<div>
+		<h2>{props.unrevealedSecret.heroClass}</h2>
+		<ul>
+			{props.unrevealedSecret.possibleSecrets.map(function(possibleSecret, index) {
+				return <li key={index}>{possibleSecret.secret.name} ({possibleSecret.activePossibility ? "ACTIVE" : "inactive"})</li>;
+			})}
+		</ul>
+	</div>
+);
 
-	handleTestEvent(e, data) {
-		console.log(e);
-		console.log(data);
-		this.setState({stateTest: this.state.stateTest + ' something new!' + data + '!!'});
-	}
+const ConsequentialActionListComponent = props => (
+	<div>
+		<h1>Consequential Actions</h1>
+		<ul>
+			{props.consequentialActions.map(function(consequentialAction) {
+				return <ConsequentialActionComponent key={consequentialAction.action.question} consequentialAction={consequentialAction}/>;
+			})}
+		</ul>
+	</div>
+);
 
-	handleClearEvent() {
-		console.log('clearing test event handler');
-		this.subscriptions.forEach((sub) => PubSub.unsubscribe(sub));
-	}
-}
-*/
-
-class RevealedSecretList extends BaseComponent {
-	render() {
-		return (
-			<div>
-				<h1>RevealedSecretList</h1>
-				<ul>
-					{this.props.revealedSecrets.map(function(secret, index) {
-						return <RevealedSecret key={index} secret={secret}/>;
-					})}
-				</ul>
-			</div>
-		);
-	}
-}
-
-class RevealedSecret extends BaseComponent {
-	render() {
-		return (
-			<div>{this.props.secret.name} ({this.props.secret.heroClass}) - {this.props.secret.text}</div>
-		);
-	}
-}
-
-class UnrevealedSecretList extends BaseComponent {
-	render() {
-		return <div>UnrevealedSecretList</div>;
-	}
-}
-
-class ConsequentialActionList extends BaseComponent {
-	render() {
-		return <div>ConsequentialActionList</div>;
-	}
-}
+const ConsequentialActionComponent = props => (
+	<div>
+		<h2>{props.consequentialAction.action.question}</h2>
+		<ul>
+			{props.consequentialAction.consequences.map(function(consequence, index) {
+				return <li key={index}>{consequence}</li>;
+			})}
+		</ul>
+	</div>
+);
 
 /*eslint-disable no-unused-vars*/
 class AppComponent extends BaseComponent {
@@ -90,17 +80,19 @@ class AppComponent extends BaseComponent {
 
 	constructor(props) {
 		super(props);
-		this.state = { revealedSecrets: [] };
+		this.state = { revealedSecrets: [], unrevealedSecrets: [], consequentialActions: [] };
 
 		this.subscribe(events.SECRET_REVEALED, (e, data) => { this.handleSecretRevealed(e, data); });
+		this.subscribe(events.UNREVEALED_SECRETS_UPDATED, (e, data) => { this.handleUnrevealedSecretsUpdated(e, data); });
+		this.subscribe(events.CONSEQUENTIAL_ACTIONS_UPDATED, (e, data) => { this.handleConsequentialActionsUpdated(e, data); });
 	}
 
 	render() {
 		return (
 			<div>
-				<RevealedSecretList revealedSecrets={this.state.revealedSecrets}/>
-				<UnrevealedSecretList />
-				<ConsequentialActionList />
+				<RevealedSecretListComponent revealedSecrets={this.state.revealedSecrets}/>
+				<UnrevealedSecretListComponent unrevealedSecrets={this.state.unrevealedSecrets}/>
+				<ConsequentialActionListComponent consequentialActions={this.state.consequentialActions}/>
 			</div>
 		);
 	}
@@ -108,6 +100,14 @@ class AppComponent extends BaseComponent {
 	handleSecretRevealed(e, secret) {
 		this.state.revealedSecrets.push(secret);
 		this.setState({ revealedSecrets: this.state.revealedSecrets });
+	}
+
+	handleUnrevealedSecretsUpdated(e, unrevealedSecrets) {
+		this.setState({ unrevealedSecrets: unrevealedSecrets });
+	}
+
+	handleConsequentialActionsUpdated(e, consequentialActions) {
+		this.setState({ consequentialActions: consequentialActions });
 	}
 }
 

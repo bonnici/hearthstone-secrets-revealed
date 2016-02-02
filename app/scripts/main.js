@@ -1,10 +1,12 @@
 'use strict';
 
 var appState = new AppState();
-appState.addUnrevealedSecret('hunter');
+
+//so temp
+setTimeout(() => appState.addUnrevealedSecret('hunter'), 2000);
 
 ReactDOM.render(
 	//<AppComponent className="testing" />,
 	<AppComponent/>,
-	document.getElementById('example')
+	document.getElementById('reactApp')
 );
