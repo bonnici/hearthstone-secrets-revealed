@@ -133,7 +133,6 @@ class AppState {
 		this.unrevealedSecrets.push(unrevealedSecret);
 
 		this.rebuildConsequentialActions();
-		this.prettyPrint();
 
 		PubSub.publish(events.UNREVEALED_SECRETS_UPDATED, this.unrevealedSecrets);
 	}
@@ -154,7 +153,6 @@ class AppState {
 		this.unrevealedSecrets.splice(unrevealedSecretIndex, 1);
 
 		this.rebuildConsequentialActions();
-		this.prettyPrint();
 
 		PubSub.publish(events.SECRET_REVEALED, secret);
 		PubSub.publish(events.UNREVEALED_SECRETS_UPDATED, this.unrevealedSecrets);
@@ -168,7 +166,6 @@ class AppState {
 		this.unrevealedSecrets[unrevealedSecretIndex].setSecretAsImpossible(possibleSecretIndex);
 
 		this.rebuildConsequentialActions();
-		this.prettyPrint();
 
 		PubSub.publish(events.UNREVEALED_SECRETS_UPDATED, this.unrevealedSecrets);
 	}
@@ -182,7 +179,6 @@ class AppState {
 		this.unrevealedSecrets.forEach((playedSecret) => playedSecret.setSecretsAsImpossible(secretsToSetAsImpossible));
 
 		this.rebuildConsequentialActions();
-		this.prettyPrint();
 
 		PubSub.publish(events.UNREVEALED_SECRETS_UPDATED, this.unrevealedSecrets);
 	}
@@ -202,27 +198,5 @@ class AppState {
 
 		this.consequentialActions = activeConsequentialActions.map((action) => new ConsequentialAction(action, possibleSecrets));
 		PubSub.publish(events.CONSEQUENTIAL_ACTIONS_UPDATED, this.consequentialActions);
-	}
-
-	//temp
-	prettyPrint() {
-		console.log('\nRevealed Secrets:');
-		this.revealedSecrets.forEach((x) => console.log(x.name));
-
-		console.log('\nUnrevealed Secrets:');
-		this.unrevealedSecrets.forEach((x) => {
-			console.log(x.heroClass);
-			x.possibleSecrets.forEach((y) => {
-				console.log('  ' + y.secret.name + ' (' + (y.activePossibility ? 'ACTIVE' : 'inactive') + ')');
-			});
-		});
-
-		console.log('\nConsequential Actions:');
-		this.consequentialActions.forEach((x) => {
-			console.log(x.action.question);
-			x.consequences.forEach((y) => {
-				console.log('  ' + y);
-			});
-		});
 	}
 }

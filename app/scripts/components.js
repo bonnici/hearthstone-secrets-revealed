@@ -34,10 +34,23 @@ const UnrevealedSecretListComponent = props => (
 	<div>
 		<h1>Unrevealed Secrets</h1>
 		<ul>
-			{props.unrevealedSecrets.map(function(secret, index) {
-				return <UnrevealedSecretComponent key={index} unrevealedSecret={secret}/>;
+			{props.unrevealedSecrets.map(function (secret, index) {
+				return (
+					<UnrevealedSecretComponent
+						key={index}
+						unrevealedSecretIndex={index}
+						unrevealedSecret={secret}
+						setSecretAsRevealed={props.setSecretAsRevealed}
+						setSecretAsImpossible={props.setSecretAsImpossible}
+					/>
+				);
 			})}
 		</ul>
+		<div>
+			<p onClick={props.addHunterSecret}>New Hunter Secret</p>
+			<p onClick={props.addMageSecret}>New Mage Secret</p>
+			<p onClick={props.addPaladinSecret}>New Paladin Secret</p>
+		</div>
 	</div>
 );
 
@@ -46,7 +59,12 @@ const UnrevealedSecretComponent = props => (
 		<h2>{props.unrevealedSecret.heroClass}</h2>
 		<ul>
 			{props.unrevealedSecret.possibleSecrets.map(function(possibleSecret, index) {
-				return <li key={index}>{possibleSecret.secret.name} ({possibleSecret.activePossibility ? "ACTIVE" : "inactive"})</li>;
+				return (
+					<li key={index}>
+						{possibleSecret.secret.name} ({possibleSecret.activePossibility ? 'ACTIVE' : 'inactive'})
+						<span onClick={props.setSecretAsRevealed.bind(this, props.unrevealedSecretIndex, index)}> (It's this) </span>
+						<span onClick={props.setSecretAsImpossible.bind(this, props.unrevealedSecretIndex, index)}> (It's not this) </span>
+					</li>);
 			})}
 		</ul>
 	</div>
@@ -56,8 +74,12 @@ const ConsequentialActionListComponent = props => (
 	<div>
 		<h1>Consequential Actions</h1>
 		<ul>
-			{props.consequentialActions.map(function(consequentialAction) {
-				return <ConsequentialActionComponent key={consequentialAction.action.question} consequentialAction={consequentialAction}/>;
+			{props.consequentialActions.map(function(consequentialAction, index) {
+				return (
+					<div key={consequentialAction.action.question} onClick={props.setConsequentialActionAsPerformed.bind(this, index)}>
+						<ConsequentialActionComponent consequentialAction={consequentialAction} />
+					</div>
+				);
 			})}
 		</ul>
 	</div>
@@ -90,9 +112,21 @@ class AppComponent extends BaseComponent {
 	render() {
 		return (
 			<div>
-				<RevealedSecretListComponent revealedSecrets={this.state.revealedSecrets}/>
-				<UnrevealedSecretListComponent unrevealedSecrets={this.state.unrevealedSecrets}/>
-				<ConsequentialActionListComponent consequentialActions={this.state.consequentialActions}/>
+				<RevealedSecretListComponent
+					revealedSecrets={this.state.revealedSecrets}
+				/>
+				<UnrevealedSecretListComponent
+					unrevealedSecrets={this.state.unrevealedSecrets}
+					setSecretAsRevealed={this.props.setSecretAsRevealed}
+					setSecretAsImpossible={this.props.setSecretAsImpossible}
+					addHunterSecret={this.props.addHunterSecret}
+					addMageSecret={this.props.addMageSecret}
+					addPaladinSecret={this.props.addPaladinSecret}
+				/>
+				<ConsequentialActionListComponent
+					consequentialActions={this.state.consequentialActions}
+					setConsequentialActionAsPerformed={this.props.setConsequentialActionAsPerformed}
+				/>
 			</div>
 		);
 	}
