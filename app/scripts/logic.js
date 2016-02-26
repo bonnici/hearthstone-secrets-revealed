@@ -14,6 +14,10 @@ class Secret {
 			this.triggeredBy.push(action);
 		}
 	}
+
+	get imageFileName() {
+		return this.name.toLowerCase().replace(/ /g, '-') + '.png';
+	}
 }
 
 var bear = new Secret('Bear Trap', 'hunter', 'After your hero is attacked, summon a 3/3 Bear with Taunt', 'This might summon a 3/3 boar for the opposing hero');
@@ -105,13 +109,17 @@ class UnrevealedSecret {
 			}
 		});
 	}
+
+	containsPossibleSecret() {
+		return this.possibleSecrets.filter((secret) => secret.activePossibility).length > 0;
+	}
 }
 
 class ConsequentialAction {
 	constructor(action, possibleSecrets) {
 		this.action = action;
 		let filteredPossibleSecrets = possibleSecrets.filter((possibleSecret) => possibleSecret.activePossibility).map((possibleSecret) => possibleSecret.secret);
-		this.consequences = _.intersection(this.action.secretsTriggered, filteredPossibleSecrets).map((secret) => secret.consequence);
+		this.triggeringSecrets = _.intersection(this.action.secretsTriggered, filteredPossibleSecrets);
 	}
 }
 
@@ -164,6 +172,10 @@ class AppState {
 		}
 
 		this.unrevealedSecrets[unrevealedSecretIndex].setSecretAsImpossible(possibleSecretIndex);
+
+		if (!this.unrevealedSecrets[unrevealedSecretIndex].containsPossibleSecret()) {
+			this.unrevealedSecrets.splice(unrevealedSecretIndex, 1);
+		}
 
 		this.rebuildConsequentialActions();
 

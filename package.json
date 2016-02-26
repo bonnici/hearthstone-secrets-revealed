@@ -48,8 +48,8 @@
       "ReactDOM": true,
       "React": true,
       "PubSub": true,
+      "$": true,
       "AppState": true,
-      "BaseComponent": true,
       "events": true
     },
     "ecmaFeatures": {

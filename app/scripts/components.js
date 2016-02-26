@@ -14,7 +14,7 @@ class BaseComponent extends React.Component {
 		this.subscriptions.push(PubSub.subscribe(eventName, handler));
 	}
 }
-
+/*
 const RevealedSecretListComponent = props => (
 	<div>
 		<h1>Revealed Secrets</h1>
@@ -29,11 +29,14 @@ const RevealedSecretListComponent = props => (
 const RevealedSecretComponent = props => (
 	<div>{props.secret.name} ({props.secret.heroClass}) - {props.secret.text}</div>
 );
+*/
 
 const UnrevealedSecretListComponent = props => (
 	<div>
-		<h1>Unrevealed Secrets</h1>
-		<ul>
+		<h3 className="ui horizontal divider center aligned header">
+			<div className="content">Possible secrets</div>
+		</h3>
+		<div className="ui segments">
 			{props.unrevealedSecrets.map(function (secret, index) {
 				return (
 					<UnrevealedSecretComponent
@@ -42,57 +45,93 @@ const UnrevealedSecretListComponent = props => (
 						unrevealedSecret={secret}
 						setSecretAsRevealed={props.setSecretAsRevealed}
 						setSecretAsImpossible={props.setSecretAsImpossible}
+						setSecretAsUnknown={props.setSecretAsUnknown}
+						possibleSecretClicked={props.possibleSecretClicked}
 					/>
 				);
 			})}
-		</ul>
-		<div>
-			<p onClick={props.addHunterSecret}>New Hunter Secret</p>
-			<p onClick={props.addMageSecret}>New Mage Secret</p>
-			<p onClick={props.addPaladinSecret}>New Paladin Secret</p>
+			<div className="ui secondary center aligned segment">
+				<div className="ui buttons">
+					<button className="ui green button" onClick={props.addHunterSecret}>New Hunter Secret</button>
+					<button className="ui violet button" onClick={props.addMageSecret}>New Mage Secret</button>
+					<button className="ui yellow button" onClick={props.addPaladinSecret}>New Paladin Secret</button>
+				</div>
+			</div>
 		</div>
 	</div>
 );
 
 const UnrevealedSecretComponent = props => (
-	<div>
-		<h2>{props.unrevealedSecret.heroClass}</h2>
-		<ul>
-			{props.unrevealedSecret.possibleSecrets.map(function(possibleSecret, index) {
+	<div className="ui blurring center aligned segment unrevealed-secret">
+		{props.unrevealedSecret.possibleSecrets.map(function(possibleSecret, index) {
+			if (possibleSecret.activePossibility) {
 				return (
-					<li key={index}>
-						{possibleSecret.secret.name} ({possibleSecret.activePossibility ? 'ACTIVE' : 'inactive'})
-						<span onClick={props.setSecretAsRevealed.bind(this, props.unrevealedSecretIndex, index)}> (It's this) </span>
-						<span onClick={props.setSecretAsImpossible.bind(this, props.unrevealedSecretIndex, index)}> (It's not this) </span>
-					</li>);
-			})}
-		</ul>
+					<img
+						key={index}
+						className="ui middle aligned secret-card image"
+						src={'/images/' + possibleSecret.secret.imageFileName}
+						onClick={props.possibleSecretClicked.bind(this, props.unrevealedSecretIndex, index, possibleSecret.secret.name, possibleSecret.secret.text)}
+					/>);
+			}
+		})}
+		<div className="ui inverted selected-secret-card dimmer">
+			<h2 className="ui header clicked-card-name" />
+			<p className="clicked-card-text" />
+
+			<button className="ui positive labeled icon button" onClick={props.setSecretAsRevealed.bind(this, props.unrevealedSecretIndex)}>
+				<i className="checkmark icon" />
+				It was this
+			</button>
+			<button className="ui grey labeled icon button" onClick={props.setSecretAsUnknown.bind(this, props.unrevealedSecretIndex)}>
+				<i className="help icon" />
+				It might be this
+			</button>
+			<button className="ui negative labeled icon button" onClick={props.setSecretAsImpossible.bind(this, props.unrevealedSecretIndex)}>
+				<i className="remove icon" />
+				It's not this
+			</button>
+		</div>
 	</div>
 );
 
 const ConsequentialActionListComponent = props => (
 	<div>
-		<h1>Consequential Actions</h1>
-		<ul>
+		<h3 className="ui horizontal divider center aligned header">
+			<div className="content">Triggering actions and possible effects</div>
+		</h3>
+		<div className="ui stackable grid">
 			{props.consequentialActions.map(function(consequentialAction, index) {
 				return (
-					<div key={consequentialAction.action.question} onClick={props.setConsequentialActionAsPerformed.bind(this, index)}>
-						<ConsequentialActionComponent consequentialAction={consequentialAction} />
+					<div key={consequentialAction.action.question} className="eight wide column">
+						<ConsequentialActionComponent
+							consequentialAction={consequentialAction}
+							actionIndex={index}
+							setConsequentialActionAsPerformed={props.setConsequentialActionAsPerformed}
+						/>
 					</div>
 				);
 			})}
-		</ul>
+		</div>
 	</div>
 );
 
 const ConsequentialActionComponent = props => (
 	<div>
-		<h2>{props.consequentialAction.action.question}</h2>
-		<ul>
-			{props.consequentialAction.consequences.map(function(consequence, index) {
-				return <li key={index}>{consequence}</li>;
-			})}
-		</ul>
+		<h4 className="ui top attached header">
+			{props.consequentialAction.action.question}
+		</h4>
+		<div className="ui attached segment">
+			<ul className="ui list">
+				{props.consequentialAction.triggeringSecrets.map(function(triggeringSecret, index) {
+					return <li key={index}>{triggeringSecret.consequence} ({triggeringSecret.name})</li>;
+				})}
+			</ul>
+
+			<button className="fluid ui labeled icon button" onClick={props.setConsequentialActionAsPerformed.bind(this, props.actionIndex)}>
+				<i className="checkmark icon" />
+				I did this and nothing happened
+			</button>
+		</div>
 	</div>
 );
 
@@ -111,14 +150,15 @@ class AppComponent extends BaseComponent {
 
 	render() {
 		return (
-			<div>
-				<RevealedSecretListComponent
-					revealedSecrets={this.state.revealedSecrets}
-				/>
+			<div className="ui container">
+				<h1 className="ui center aligned header">Hearthstone Secrets Revealed</h1>
+				{/* <RevealedSecretListComponent revealedSecrets={this.state.revealedSecrets} /> */}
 				<UnrevealedSecretListComponent
 					unrevealedSecrets={this.state.unrevealedSecrets}
 					setSecretAsRevealed={this.props.setSecretAsRevealed}
 					setSecretAsImpossible={this.props.setSecretAsImpossible}
+					setSecretAsUnknown={this.props.setSecretAsUnknown}
+					possibleSecretClicked={this.props.possibleSecretClicked}
 					addHunterSecret={this.props.addHunterSecret}
 					addMageSecret={this.props.addMageSecret}
 					addPaladinSecret={this.props.addPaladinSecret}
