@@ -44,33 +44,34 @@ var competitiveSpirit = new Secret('Competitive Spirit', 'paladin', 'When your t
 var eyeForAnEye = new Secret('Eye for an Eye', 'paladin', 'When your hero takes damage, deal that much damage to the enemy hero.', 'The same damage might be dealt to you as well');
 var nobleSacrifice = new Secret('Noble Sacrifice', 'paladin', 'When an enemy attacks, summon a 2/1 Defender as the new target.', 'That attack might be targeted on a 2/1 Defender');
 var redemption = new Secret('Redemption', 'paladin', 'When one of your minion dies, return it to life with 1 Health.', 'That minion might be returned to life with 1 health');
-var sacredTrial = new Secret('Sacred Trial', 'paladin', 'When your opponent has at least 3 minions and plays another, destroy it.', 'That minion might be destroyed');
 var repentance = new Secret('Repentance', 'paladin', 'When your opponent plays a minion, reduce its Health to 1.', 'That minion\'s health might be reduced to 1');
+var sacredTrial = new Secret('Sacred Trial', 'paladin', 'When your opponent has at least 3 minions and plays another, destroy it.', 'That minion might be destroyed');
 
 var secrets = [bear, dart, explosive, freezing, misdirection, snake, snipe,
 	counterspell, duplicate, effigy, iceBarrier, iceBlock, mirrorEntity, spellbender, vaporize,
-	avenge, competitiveSpirit, eyeForAnEye, nobleSacrifice, redemption, sacredTrial, repentance];
+	avenge, competitiveSpirit, eyeForAnEye, nobleSacrifice, redemption, repentance, sacredTrial];
 
 
 class TriggeringAction {
-	constructor(question, className, secretsTriggered) {
+	constructor(question, className, sortOrder, secretsTriggered) {
 		this.question = question;
 		this.className = className;
+		this.sortOrder = sortOrder;
 		this.secretsTriggered = secretsTriggered;
 	}
 }
 
-var attackHero = new TriggeringAction('If you attack the opposing hero', 'attack-hero', [bear, explosive, misdirection, iceBarrier, nobleSacrifice]);
-var attackHeroWithMinion = new TriggeringAction('If you attack the opposing hero with a minion', 'attack-hero-with-minion', [bear, explosive, misdirection, iceBarrier, freezing, vaporize, nobleSacrifice]);
-var damageHero = new TriggeringAction('If you damage the opposing hero', 'damage-hero', [eyeForAnEye]);
-var fatallyDamageHero = new TriggeringAction('If you deal fatal damage to the opposing hero', 'fatally-damage-hero', [iceBlock]);
-var attackMinion = new TriggeringAction('If you attack an enemy minion', 'attack-minion', [snake, nobleSacrifice]);
-var killedMinion = new TriggeringAction('If you kill an enemy minion', 'kill-minion', [duplicate, effigy, avenge, redemption]);
-var playedMinion = new TriggeringAction('If you play a minion', 'play-minion', [snipe, mirrorEntity, repentance]);
-var castSpell = new TriggeringAction('If you cast a spell', 'cast-spell', [counterspell]);
-var castSpellOnMinion = new TriggeringAction('If you cast a spell on a minion', 'cast-spell-on-minion', [counterspell, spellbender]);
-var heroPower = new TriggeringAction('If you use your Hero Power', 'hero-power', [dart]);
-var turnStarted = new TriggeringAction('If you wait for a turn to start for the opposing hero', 'opponent-turn-start', [competitiveSpirit]);
+var attackHero = new TriggeringAction('If you attack the opposing hero', 'attack-hero', 1, [bear, explosive, misdirection, iceBarrier, nobleSacrifice]);
+var attackHeroWithMinion = new TriggeringAction('If you attack the opposing hero with a minion', 'attack-hero-with-minion', 2, [bear, explosive, misdirection, iceBarrier, freezing, vaporize, nobleSacrifice]);
+var damageHero = new TriggeringAction('If you damage the opposing hero', 'damage-hero', 3, [eyeForAnEye]);
+var fatallyDamageHero = new TriggeringAction('If you deal fatal damage to the opposing hero', 'fatally-damage-hero', 4, [iceBlock]);
+var attackMinion = new TriggeringAction('If you attack an enemy minion', 'attack-minion', 5, [snake, nobleSacrifice]);
+var killedMinion = new TriggeringAction('If you kill an enemy minion', 'kill-minion', 6, [duplicate, effigy, avenge, redemption]);
+var playedMinion = new TriggeringAction('If you play a minion', 'play-minion', 7, [snipe, mirrorEntity, repentance]);
+var castSpell = new TriggeringAction('If you cast a spell', 'cast-spell', 8, [counterspell]);
+var castSpellOnMinion = new TriggeringAction('If you cast a spell on a minion', 'cast-spell-on-minion', 9, [counterspell, spellbender]);
+var heroPower = new TriggeringAction('If you use your Hero Power', 'hero-power', 10, [dart]);
+var turnStarted = new TriggeringAction('If you wait for a turn to start for the opposing hero', 'opponent-turn-start', 11, [competitiveSpirit]);
 
 var triggeringActions = [attackHero, attackHeroWithMinion, damageHero, fatallyDamageHero, attackMinion, killedMinion, playedMinion, castSpell, castSpellOnMinion, heroPower, turnStarted];
 
@@ -221,7 +222,8 @@ class AppState {
 				});
 		});
 
-		this.consequentialActions = activeConsequentialActions.sort((a, b) => a.question > b.question).map((action) => new ConsequentialAction(action, possibleSecrets));
+		this.consequentialActions = activeConsequentialActions.sort((a, b) => a.sortOrder - b.sortOrder).map((action) => new ConsequentialAction(action, possibleSecrets));
+
 		PubSub.publish(events.CONSEQUENTIAL_ACTIONS_UPDATED, this.consequentialActions);
 	}
 }

@@ -130,7 +130,7 @@ const ConsequentialActionListComponent = props => (
 			{props.consequentialActions.map(function(consequentialAction, index) {
 				return (
 					<ConsequentialActionComponent
-						key={consequentialAction.action.question}
+						key={consequentialAction.action.sortOrder}
 						consequentialAction={consequentialAction}
 						actionIndex={index}
 						setConsequentialActionAsPerformed={props.setConsequentialActionAsPerformed}
