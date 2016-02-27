@@ -2,15 +2,11 @@
 
 /*
 todo
-- re-add outdated browser warning?
-- add metas
-- update analytics ID
-- add footer with contact (and set up new email with forwarding)
-- better look (backgrounds/colors)
-- make dismissable help text or popovers?
-- better logo
-- change favicon
+- "it was this" button should clear that secret from the other possibilities
+- make dismissable help text or popovers
 - test on other browsers
+- buy domain and change url properties
+- set up email address
 - standard/wild mode
 */
 
@@ -27,3 +23,5 @@ ReactDOM.render(
 	/>,
 	document.getElementById('reactApp')
 );
+
+$('#contact').click(() => $('.contact.modal').modal('show'));

@@ -32,7 +32,7 @@ class UnrevealedSecretComponent extends React.Component {
 	}
 
 	componentDidMount() {
-		$(ReactDOM.findDOMNode(this)).transition('slide down');
+		$(ReactDOM.findDOMNode(this)).transition('fade', duration: '250ms');
 	}
 
 	componentWillLeave(callback) {
@@ -103,7 +103,7 @@ class UnrevealedSecretCard extends React.Component {
 		return (
 			<span>
 				<img
-					className={"ui middle aligned hidden secret-card image " + this.props.secret.className + " " + actionClasses}
+					className={'ui middle aligned hidden secret-card image ' + this.props.secret.className + ' ' + actionClasses}
 					src={'/images/' + this.props.secret.imageFileName}
 				/>
 				<div className="ui special popup">
@@ -165,7 +165,7 @@ class ConsequentialActionComponent extends React.Component {
 
 	render() {
 		return (
-			<div className={"hidden fluid consequential-action card " + this.props.consequentialAction.action.className}>
+			<div className={'hidden fluid consequential-action card ' + this.props.consequentialAction.action.className}>
 				<div className="content">
 					<div className="header">
 						{this.props.consequentialAction.action.question}&hellip;
@@ -211,7 +211,7 @@ class ConsequentialActionConsequenceComponent extends React.Component {
 				data-content={this.props.secret.name}
 				data-variation="tiny"
 				data-position="left center"
-				className={this.props.secret.className + " consequence"}>
+				className={this.props.secret.className + ' consequence'}>
 
 				{this.props.secret.consequence}.
 			</li>
@@ -245,7 +245,6 @@ class AppComponent extends React.Component {
 	render() {
 		return (
 			<div className="ui container">
-				<h1 className="ui center aligned header">Hearthstone Secrets Revealed!</h1>
 				<UnrevealedSecretListComponent
 					unrevealedSecrets={this.state.unrevealedSecrets}
 					setSecretAsRevealed={this.props.setSecretAsRevealed}
