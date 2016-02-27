@@ -71,7 +71,8 @@ class UnrevealedSecretCard extends React.Component {
 	}
 
 	componentDidMount() {
-		$(ReactDOM.findDOMNode(this)).find('img').popup({
+		$(ReactDOM.findDOMNode(this)).find('img')
+			.popup({
 				inline: true,
 				hoverable: true,
 				position: 'bottom center',
@@ -79,6 +80,18 @@ class UnrevealedSecretCard extends React.Component {
 			}).hide();
 
 		$(ReactDOM.findDOMNode(this)).find('img').transition('horizontal flip');
+
+		/*
+		var selector = '.consequence.' + this.props.secret.className;
+		$(ReactDOM.findDOMNode(this)).hover(
+			() => $(selector).addClass('highlighted'),
+			() => $(selector).removeClass('highlighted')
+		);
+		$(ReactDOM.findDOMNode(this)).hover(
+			() => $(selector).transition('stop').transition('set looping').transition('pulse', '1s'),
+			() => $(selector).transition('remove looping')
+		);
+		*/
 	}
 
 	componentWillLeave(callback) {
@@ -86,10 +99,11 @@ class UnrevealedSecretCard extends React.Component {
 	}
 
 	render() {
+		var actionClasses = this.props.secret.triggeredBy.map((action) => action.className).join(' ');
 		return (
 			<span>
 				<img
-					className="ui middle aligned hidden secret-card image"
+					className={"ui middle aligned hidden secret-card image " + this.props.secret.className + " " + actionClasses}
 					src={'/images/' + this.props.secret.imageFileName}
 				/>
 				<div className="ui special popup">
@@ -137,7 +151,12 @@ class ConsequentialActionComponent extends React.Component {
 
 	componentDidMount() {
 		$(ReactDOM.findDOMNode(this)).transition({animation: 'fade', duration: '750ms'});
-		$('.consequential-action li').popup();
+
+		var selector = '.secret-card.' + this.props.consequentialAction.action.className;
+		$(ReactDOM.findDOMNode(this)).hover(
+			() => $(selector).transition('stop').transition('set looping').transition('pulse', '1s'),
+			() => $(selector).transition('remove looping')
+		);
 	}
 
 	componentWillLeave(callback) {
@@ -146,7 +165,7 @@ class ConsequentialActionComponent extends React.Component {
 
 	render() {
 		return (
-			<div className="hidden fluid consequential-action card">
+			<div className={"hidden fluid consequential-action card " + this.props.consequentialAction.action.className}>
 				<div className="content">
 					<div className="header">
 						{this.props.consequentialAction.action.question}&hellip;
@@ -154,7 +173,11 @@ class ConsequentialActionComponent extends React.Component {
 					<div className="description">
 						<ul className="ui list">
 							{this.props.consequentialAction.triggeringSecrets.map(function(triggeringSecret, index) {
-								return <li key={index} data-content={triggeringSecret.name} data-variation="tiny" data-position="left center">{triggeringSecret.consequence}.</li>;
+								return (
+									<ConsequentialActionConsequenceComponent
+										key={index}
+										secret={triggeringSecret} />
+								);
 							})}
 						</ul>
 					</div>
@@ -166,6 +189,32 @@ class ConsequentialActionComponent extends React.Component {
 					</button>
 				</div>
 			</div>
+		);
+	}
+}
+
+/*eslint-disable no-unused-vars*/
+class ConsequentialActionConsequenceComponent extends React.Component {
+/*eslint-enable no-unused-vars*/
+
+	constructor(props) {
+		super(props);
+	}
+
+	componentDidMount() {
+		$(ReactDOM.findDOMNode(this)).popup();
+	}
+
+	render() {
+		return (
+			<li
+				data-content={this.props.secret.name}
+				data-variation="tiny"
+				data-position="left center"
+				className={this.props.secret.className + " consequence"}>
+
+				{this.props.secret.consequence}.
+			</li>
 		);
 	}
 }

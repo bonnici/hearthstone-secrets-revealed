@@ -16,11 +16,15 @@ class Secret {
 	}
 
 	get imageFileName() {
-		return this.name.toLowerCase().replace(/ /g, '-') + '.png';
+		return this.className + '.png';
+	}
+
+	get className() {
+		return this.name.toLowerCase().replace(/ /g, '-');
 	}
 }
 
-var bear = new Secret('Bear Trap', 'hunter', 'After your hero is attacked, summon a 3/3 Bear with Taunt.', 'A 3/3 boar might be summoned for your opponent');
+var bear = new Secret('Bear Trap', 'hunter', 'After your hero is attacked, summon a 3/3 Bear with Taunt.', 'A 3/3 boar with Taunt might be summoned for your opponent');
 var dart = new Secret('Dart Trap', 'hunter', 'When an opposing Hero Power is used, deal 5 damage to a random enemy.', '5 damage might be dealt to a random friendly character');
 var explosive = new Secret('Explosive Trap', 'hunter', 'When your hero is attacked, deal 2 damage to all enemies.', '2 damage might be dealt to all friendly characters');
 var freezing = new Secret('Freezing Trap', 'hunter', 'When an enemy minion attacks, return it to its owner\'s hand and it costs (2) more.', 'That minion might be returned to your hand, costing 2 more');
@@ -49,23 +53,24 @@ var secrets = [bear, dart, explosive, freezing, misdirection, snake, snipe,
 
 
 class TriggeringAction {
-	constructor(question, secretsTriggered) {
+	constructor(question, className, secretsTriggered) {
 		this.question = question;
+		this.className = className;
 		this.secretsTriggered = secretsTriggered;
 	}
 }
 
-var attackHero = new TriggeringAction('If you attack the opposing hero', [bear, explosive, misdirection, iceBarrier, nobleSacrifice]);
-var attackHeroWithMinion = new TriggeringAction('If you attack the opposing hero with a minion', [bear, explosive, misdirection, iceBarrier, freezing, vaporize, nobleSacrifice]);
-var damageHero = new TriggeringAction('If you damage the opposing hero', [eyeForAnEye]);
-var fatallyDamageHero = new TriggeringAction('If you deal fatal damage to the opposing hero', [iceBlock]);
-var attackMinion = new TriggeringAction('If you attack an enemy minion', [snake, nobleSacrifice]);
-var killedMinion = new TriggeringAction('If you kill an enemy minion', [duplicate, effigy, avenge, redemption]);
-var playedMinion = new TriggeringAction('If you play a minion', [snipe, mirrorEntity, repentance]);
-var castSpell = new TriggeringAction('If you cast a spell', [counterspell]);
-var castSpellOnMinion = new TriggeringAction('If you cast a spell on a minion', [counterspell, spellbender]);
-var heroPower = new TriggeringAction('If you use your Hero Power', [dart]);
-var turnStarted = new TriggeringAction('If you wait for a turn to start for the opposing hero', [competitiveSpirit]);
+var attackHero = new TriggeringAction('If you attack the opposing hero', 'attack-hero', [bear, explosive, misdirection, iceBarrier, nobleSacrifice]);
+var attackHeroWithMinion = new TriggeringAction('If you attack the opposing hero with a minion', 'attack-hero-with-minion', [bear, explosive, misdirection, iceBarrier, freezing, vaporize, nobleSacrifice]);
+var damageHero = new TriggeringAction('If you damage the opposing hero', 'damage-hero', [eyeForAnEye]);
+var fatallyDamageHero = new TriggeringAction('If you deal fatal damage to the opposing hero', 'fatally-damage-hero', [iceBlock]);
+var attackMinion = new TriggeringAction('If you attack an enemy minion', 'attack-minion', [snake, nobleSacrifice]);
+var killedMinion = new TriggeringAction('If you kill an enemy minion', 'kill-minion', [duplicate, effigy, avenge, redemption]);
+var playedMinion = new TriggeringAction('If you play a minion', 'play-minion', [snipe, mirrorEntity, repentance]);
+var castSpell = new TriggeringAction('If you cast a spell', 'cast-spell', [counterspell]);
+var castSpellOnMinion = new TriggeringAction('If you cast a spell on a minion', 'cast-spell-on-minion', [counterspell, spellbender]);
+var heroPower = new TriggeringAction('If you use your Hero Power', 'hero-power', [dart]);
+var turnStarted = new TriggeringAction('If you wait for a turn to start for the opposing hero', 'opponent-turn-start', [competitiveSpirit]);
 
 var triggeringActions = [attackHero, attackHeroWithMinion, damageHero, fatallyDamageHero, attackMinion, killedMinion, playedMinion, castSpell, castSpellOnMinion, heroPower, turnStarted];
 
