@@ -35,12 +35,15 @@
 			</div>
 		<![endif]-->
 
-		<header class="ui container menu">
-			<h3 class="header item">Hearthstone Secrets Revealed</h3>
-			<div class="right menu">
-				<a class="item" id="help">Help</a>
-				<a class="item" id="contact">Contact</a>
+		<header class="ui stackable container menu">
+			<div class="brand item">
+				<h3 class="ui header">
+					Hearthstone Secrets Revealed
+					<div class="sub header">Cheat sheet of all Hearthstone secrets and their effects.</div>
+				</h3>
 			</div>
+			<a class="item first-right" id="help">Help</a>
+			<a class="item" id="contact">Contact</a>
 		</header>
 		<div class="ui small contact modal">
 			<i class="close icon"></i>
@@ -72,6 +75,7 @@
 		<!-- endbuild -->
 
 		<!-- build:js scripts/main.js -->
+		<script src="scripts/polyfill.js"></script>
 		<script src="scripts/events.js"></script>
 		<script src="scripts/logic.js"></script>
 		<script src="scripts/components.js"></script>

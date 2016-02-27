@@ -234,6 +234,9 @@ class AppComponent extends React.Component {
 		this.subscribe(events.CONSEQUENTIAL_ACTIONS_UPDATED, (e, data) => { this.handleConsequentialActionsUpdated(e, data); });
 	}
 
+	componentDidMount() {
+		$('.message .close').click(function() { $(this).closest('.message').hide(); });
+	}
 	componentWillUnmount() {
 		this.subscriptions.forEach((sub) => PubSub.unsubscribe(sub));
 	}
@@ -245,6 +248,17 @@ class AppComponent extends React.Component {
 	render() {
 		return (
 			<div className="ui container">
+				<div className="ui info help message">
+					<i className="close icon" />
+					<div className="header">
+						Secrets
+					</div>
+					<p>
+						Click one of these buttons when a secret is played and a list of all possible secrets will be shown below.
+						You can hover over a possible secret to remove it as an option (for example if you've already seen two played), or to
+						confirm it as the played secret (which will clear out all of the possibilities).
+					</p>
+				</div>
 				<UnrevealedSecretListComponent
 					unrevealedSecrets={this.state.unrevealedSecrets}
 					setSecretAsRevealed={this.props.setSecretAsRevealed}
@@ -253,6 +267,17 @@ class AppComponent extends React.Component {
 					addMageSecret={this.props.addMageSecret}
 					addPaladinSecret={this.props.addPaladinSecret}
 				/>
+				<div className="ui info help message">
+					<i className="close icon" />
+					<div className="header">
+						Effects
+					</div>
+					<p>
+						After you've added a secret, a list of all triggering effects and their possible consequences will be
+						shown below. If you've performed the triggering action and no secret was triggered, you can click
+						"I did this and nothing happened" and the secrets will be cleared out of the possibilities above.
+					</p>
+				</div>
 				<ConsequentialActionListComponent
 					consequentialActions={this.state.consequentialActions}
 					setConsequentialActionAsPerformed={this.props.setConsequentialActionAsPerformed}

@@ -9,8 +9,26 @@ header.ui.menu {
 	margin-top: 0;
 }
 
-.ui.menu .header.item:before {
+.ui.menu .brand.item {
+	margin-right: auto;
+}
+
+.ui.menu .brand.item:before {
 	background: none;
+}
+
+.ui.menu .first-right.item {
+	border-left: 1px solid rgba(34, 36, 38, 0.1);
+}
+
+@media only screen and (max-width: 767px) {
+	.ui.menu .first-right.item {
+		border-top: 1px solid rgba(34, 36, 38, 0.1);
+	}
+}
+
+.help.message {
+	display:none;
 }
 
 .secret-card {
@@ -22,8 +40,8 @@ header.ui.menu {
 	padding-top: 3em;
 }
 
-.consequential-action-list {
-	padding-top: 2em;
+.unrevealed-secrets {
+	padding-bottom: 2em;
 }
 
 .hidden {

@@ -2,14 +2,15 @@
 
 /*
 todo
-- make dismissable help text or popovers
-- test on other browsers
 - buy domain and change url properties
 - set up email address
 - add keywords? or update description to include "cheat sheet", "hearthstone secrets" "detect" "play around"
-- add submenu with a short description
+- think of better description/subheading
 - standard/wild mode
 */
+
+$('#contact').click(() => $('.contact.modal').modal('show'));
+$('#help').click(() => $('.help.message').show());
 
 var appState = new AppState();
 
@@ -25,4 +26,3 @@ ReactDOM.render(
 	document.getElementById('reactApp')
 );
 
-$('#contact').click(() => $('.contact.modal').modal('show'));
