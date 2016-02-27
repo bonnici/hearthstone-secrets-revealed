@@ -32,7 +32,7 @@ class UnrevealedSecretComponent extends React.Component {
 	}
 
 	componentDidMount() {
-		$(ReactDOM.findDOMNode(this)).transition('fade', duration: '250ms');
+		$(ReactDOM.findDOMNode(this)).transition({animation: 'fade', duration: '250ms'});
 	}
 
 	componentWillLeave(callback) {
@@ -95,7 +95,7 @@ class UnrevealedSecretCard extends React.Component {
 	}
 
 	componentWillLeave(callback) {
-		$(ReactDOM.findDOMNode(this)).find('img').transition({animation: 'horizontal flip', duration: '250ms', onComplete: callback });
+		$(ReactDOM.findDOMNode(this)).find('img').transition('remove looping').transition({animation: 'horizontal flip', duration: '250ms', onComplete: callback });
 	}
 
 	render() {

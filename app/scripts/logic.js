@@ -166,6 +166,15 @@ class AppState {
 		this.revealedSecrets.push(secret);
 		this.unrevealedSecrets.splice(unrevealedSecretIndex, 1);
 
+		// Only one copy of a secret can be in play at any time, so clear this card out of other possibilities
+		this.unrevealedSecrets.forEach((unrevealedSecret) => {
+			unrevealedSecret.possibleSecrets.forEach((possibleSecret) => {
+				if (possibleSecret.activePossibility && possibleSecret.secret === secret) {
+					possibleSecret.activePossibility = false;
+				}
+			});
+		});
+
 		this.rebuildConsequentialActions();
 
 		PubSub.publish(events.SECRET_REVEALED, secret);
