@@ -75,7 +75,7 @@ class UnrevealedSecretCard extends React.Component {
 			.popup({
 				inline: true,
 				hoverable: true,
-				position: 'bottom center',
+				position: 'top center',
 				delay: { hide: 100 }
 			}).hide();
 
