@@ -2,10 +2,6 @@
 
 /*
 todo
-- buy domain and change url properties
-- set up email address
-- add keywords? or update description to include "cheat sheet", "hearthstone secrets" "detect" "play around"
-- think of better description/subheading
 - standard/wild mode
 */
 
