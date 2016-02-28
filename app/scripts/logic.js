@@ -71,7 +71,7 @@ var playedMinion = new TriggeringAction('If you play a minion', 'play-minion', 7
 var castSpell = new TriggeringAction('If you cast a spell', 'cast-spell', 8, [counterspell]);
 var castSpellOnMinion = new TriggeringAction('If you cast a spell on a minion', 'cast-spell-on-minion', 9, [counterspell, spellbender]);
 var heroPower = new TriggeringAction('If you use your Hero Power', 'hero-power', 10, [dart]);
-var turnStarted = new TriggeringAction('If you wait for a turn to start for the opposing hero', 'opponent-turn-start', 11, [competitiveSpirit]);
+var turnStarted = new TriggeringAction('If you wait for a turn to start for your opponent', 'opponent-turn-start', 11, [competitiveSpirit]);
 
 var triggeringActions = [attackHero, attackHeroWithMinion, damageHero, fatallyDamageHero, attackMinion, killedMinion, playedMinion, castSpell, castSpellOnMinion, heroPower, turnStarted];
 
