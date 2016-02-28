@@ -273,9 +273,9 @@ class AppComponent extends React.Component {
 						Effects
 					</div>
 					<p>
-						After you've added a secret, a list of all triggering effects and their possible consequences will be
+						After you've added a secret, a list of all triggering actions and their possible effects will be
 						shown below. If you've performed the triggering action and no secret was triggered, you can click
-						"I did this and nothing happened" and the secrets will be cleared out of the possibilities above.
+						"I did this and nothing happened" and those secrets will be cleared out of the possibilities above.
 					</p>
 				</div>
 				<ConsequentialActionListComponent
