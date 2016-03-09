@@ -45,7 +45,7 @@ var eyeForAnEye = new Secret('Eye for an Eye', 'paladin', 'When your hero takes 
 var nobleSacrifice = new Secret('Noble Sacrifice', 'paladin', 'When an enemy attacks, summon a 2/1 Defender as the new target.', 'That attack might be targeted on a 2/1 Defender');
 var redemption = new Secret('Redemption', 'paladin', 'When one of your minion dies, return it to life with 1 Health.', 'That minion might be returned to life with 1 health');
 var repentance = new Secret('Repentance', 'paladin', 'When your opponent plays a minion, reduce its Health to 1.', 'That minion\'s health might be reduced to 1');
-var sacredTrial = new Secret('Sacred Trial', 'paladin', 'When your opponent has at least 3 minions and plays another, destroy it.', 'That minion might be destroyed');
+var sacredTrial = new Secret('Sacred Trial', 'paladin', 'When your opponent has at least 3 minions and plays another, destroy it.', 'That minion might be destroyed (if you have at least 3 other minions)');
 
 var secrets = [bear, dart, explosive, freezing, misdirection, snake, snipe,
 	counterspell, duplicate, effigy, iceBarrier, iceBlock, mirrorEntity, spellbender, vaporize,
@@ -67,7 +67,7 @@ var damageHero = new TriggeringAction('If you damage the opposing hero', 'damage
 var fatallyDamageHero = new TriggeringAction('If you deal fatal damage to the opposing hero', 'fatally-damage-hero', 4, [iceBlock]);
 var attackMinion = new TriggeringAction('If you attack an enemy minion', 'attack-minion', 5, [snake, nobleSacrifice]);
 var killedMinion = new TriggeringAction('If you kill an enemy minion', 'kill-minion', 6, [duplicate, effigy, avenge, redemption]);
-var playedMinion = new TriggeringAction('If you play a minion', 'play-minion', 7, [snipe, mirrorEntity, repentance]);
+var playedMinion = new TriggeringAction('If you play a minion', 'play-minion', 7, [snipe, mirrorEntity, repentance, sacredTrial]);
 var castSpell = new TriggeringAction('If you cast a spell', 'cast-spell', 8, [counterspell]);
 var castSpellOnMinion = new TriggeringAction('If you cast a spell on a minion', 'cast-spell-on-minion', 9, [counterspell, spellbender]);
 var heroPower = new TriggeringAction('If you use your Hero Power', 'hero-power', 10, [dart]);
